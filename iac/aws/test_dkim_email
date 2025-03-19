@@ -1,0 +1,75 @@
+import unittest
+from unittest.mock import patch, Mock
+import requests
+from main import (  # Updated to import from main.py
+    get_access_token, send_test_email, check_email_received,
+    check_dkim_header, send_slack_notification
+)
+
+class TestEmailDKIM(unittest.TestCase):
+    
+    @patch("requests.post")
+    def test_get_access_token(self, mock_post):
+        mock_response = Mock()
+        mock_response.json.return_value = {"access_token": "mock_token"}
+        mock_post.return_value = mock_response
+        
+        token = get_access_token()
+        self.assertEqual(token, "mock_token")
+        mock_post.assert_called_once()
+
+    @patch("requests.post")
+    def test_send_test_email(self, mock_post):
+        mock_response = Mock()
+        mock_response.status_code = 202
+        mock_post.return_value = mock_response
+        
+        result = send_test_email("mock_token")
+        self.assertTrue(result)
+        mock_post.assert_called_once()
+    
+    @patch("requests.get")
+    def test_check_email_received(self, mock_get):
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            "value": [
+                {
+                    "receivedDateTime": "2025-03-19T12:00:00Z",
+                    "subject": "DKIM Header Test",
+                    "id": "mock_email_id"
+                }
+            ]
+        }
+        mock_get.return_value = mock_response
+        
+        email_id = check_email_received("mock_token", "DKIM Header Test")
+        self.assertEqual(email_id, "mock_email_id")
+        mock_get.assert_called_once()
+    
+    @patch("requests.get")
+    def test_check_dkim_header(self, mock_get):
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            "value": [
+                {"name": "DKIM-Signature", "value": "some_dkim_value"}
+            ]
+        }
+        mock_get.return_value = mock_response
+        
+        result = check_dkim_header("mock_token", "mock_email_id")
+        self.assertTrue(result)
+        mock_get.assert_called_once()
+    
+    @patch("requests.post")
+    def test_send_slack_notification(self, mock_post):
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_post.return_value = mock_response
+        
+        send_slack_notification("Test message")
+        mock_post.assert_called_once()
+
+if __name__ == "__main__":
+    unittest.main()
