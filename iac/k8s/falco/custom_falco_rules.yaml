@@ -1,0 +1,9 @@
+customRules:
+  custom_rules: |-
+    - rule: Container Breakout Attempt Detected
+      desc: Detect when a container tries to access sensitive host files
+      condition: >
+        container and evt.type=open and fd.name contains "/etc/passwd"
+      output: "Container Breakout Attempt Detected! (Container ID=%container.id Command=%proc.cmdline File=%fd.name)"
+      priority: CRITICAL
+      tags: [container, breakout, security]
