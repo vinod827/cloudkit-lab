@@ -1,5 +1,5 @@
 customRules:
-  custom_rules: |-
+  custom-rules.yaml: |-
     - rule: Container Breakout Attempt Detected
       desc: Detect when a container tries to access sensitive host files
       condition: >
