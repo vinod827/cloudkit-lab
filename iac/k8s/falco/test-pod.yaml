@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: breakout-test
+  namespace: default
+spec:
+  containers:
+  - name: test
+    image: alpine
+    command: ["/bin/sh", "-c"]
+    args:
+      - cat /etc/passwd
+    securityContext:
+      privileged: false
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+  restartPolicy: Never
