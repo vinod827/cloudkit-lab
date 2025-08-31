@@ -1,0 +1,23 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: deny-all-workloads
+  labels:
+    policy: deny-all-workloads
+    created-by: vinod
+    talk: kyvernocon-2025
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: block-all
+      match:
+        resources:
+          kinds:
+            - Pod
+            - Deployment
+            - StatefulSet
+      validate:
+        message: "All workloads are blocked!"
+        pattern:
+          spec:
+            containers: []
