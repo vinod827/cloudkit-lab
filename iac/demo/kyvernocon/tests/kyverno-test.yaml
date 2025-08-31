@@ -1,0 +1,22 @@
+tests:
+  - name: bad-patch-test
+    policies:
+      - ../mistake3_bad_patching.yaml   # adjust relative path if needed
+    resources:
+      - |
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: bad-pod
+          namespace: default
+        spec:
+          containers:
+            - name: nginx
+              image: nginx:latest
+    results:
+      - policy: mistake3_bad_patching
+        rule: wrong-patch-path
+        kind: Pod
+        resources:
+          - bad-pod
+        result: fail

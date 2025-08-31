@@ -1,0 +1,25 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: bad-patch
+  labels:
+    policy: bad-patch
+    created-by: vinod
+    talk: kyvernocon-2025
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: wrong-patch-path
+      match:
+        resources:
+          kinds:
+            - Pod
+      mutate:
+        patchStrategicMerge:
+          spec:
+            containers:
+            - name: nginx # wrong
+            #- (name): "*" # correct
+              resources:
+                limits:
+                  cpu: "500m"
