@@ -1,0 +1,21 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: infinite-loop
+  labels:
+    policy: infinite-loop
+    created-by: vinod
+    talk: kyvernocon-2025
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: mutate-label
+      match:
+        resources:
+          kinds:
+            - Pod
+      mutate:
+        patchStrategicMerge:
+          metadata:
+            labels:
+              loop: "true"
