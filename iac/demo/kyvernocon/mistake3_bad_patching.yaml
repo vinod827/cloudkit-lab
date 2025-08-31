@@ -18,7 +18,8 @@ spec:
         patchStrategicMerge:
           spec:
             containers:
-            - name: nginx
+            - name: nginx # wrong
+            #- (name): "*" # correct
               resources:
                 limits:
                   cpu: "500m"
